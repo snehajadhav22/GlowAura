@@ -17,11 +17,22 @@ const app = express();
 
 // Security
 app.use(helmet());
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://glowauraa.netlify.app'
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 5000 })); // Increased for development
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 5000 }));
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
