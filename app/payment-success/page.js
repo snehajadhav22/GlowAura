@@ -1,20 +1,20 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useSearchParams }     from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle2, Package, ShoppingBag, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Package, ShoppingBag, Loader2 } from 'lucide-react';
 import api from '@/lib/axios';
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
-  const orderId      = searchParams.get('orderId');
+  const orderId = searchParams.get('orderId');
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
     if (orderId) {
       api.get(`/orders/${orderId}`)
         .then(r => setOrder(r.data.order))
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [orderId]);
 
@@ -43,7 +43,7 @@ export default function PaymentSuccessPage() {
           {order && (
             <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left">
               <p className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <Package size={16} className="text-pink-600"/> Order Details
+                <Package size={16} className="text-pink-600" /> Order Details
               </p>
               <div className="space-y-2">
                 {order.items?.slice(0, 3).map((item, i) => (
@@ -89,5 +89,17 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
+        <Loader2 className="animate-spin text-pink-500" size={48} />
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }

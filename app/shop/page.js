@@ -1,20 +1,20 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams, useRouter }       from 'next/navigation';
-import { SlidersHorizontal, X, Grid3x3, List } from 'lucide-react';
-import ProductCard       from '@/components/ProductCard';
-import FilterSidebar     from '@/components/FilterSidebar';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { SlidersHorizontal, Grid3x3, List, Loader2 } from 'lucide-react';
+import ProductCard from '@/components/ProductCard';
+import FilterSidebar from '@/components/FilterSidebar';
 import { ProductSkeleton } from '@/components/LoadingSkeleton';
 import api from '@/lib/axios';
 
-export default function ShopPage() {
+function ShopContent() {
   const searchParams = useSearchParams();
-  const router       = useRouter();
-  const [products,    setProducts]    = useState([]);
-  const [pagination,  setPagination]  = useState({ total: 0, page: 1, pages: 1 });
-  const [loading,     setLoading]     = useState(true);
+  const router = useRouter();
+  const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
+  const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [view,        setView]        = useState('grid');
+  const [view, setView] = useState('grid');
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -35,7 +35,7 @@ export default function ShopPage() {
   };
 
   const activeFiltersCount = [...searchParams.entries()]
-    .filter(([k]) => !['page','sort'].includes(k)).length;
+    .filter(([k]) => !['page', 'sort'].includes(k)).length;
 
   return (
     <div className="pt-28 pb-12 max-w-7xl mx-auto px-4">
@@ -46,10 +46,10 @@ export default function ShopPage() {
             {searchParams.get('search')
               ? `Results for "${searchParams.get('search')}"`
               : searchParams.get('brand')
-              ? searchParams.get('brand')
-              : searchParams.get('category')
-              ? searchParams.get('category')
-              : 'All Products'}
+                ? searchParams.get('brand')
+                : searchParams.get('category')
+                  ? searchParams.get('category')
+                  : 'All Products'}
           </h1>
           <p className="text-gray-500 text-sm mt-0.5">{pagination.total} products found</p>
         </div>
@@ -65,7 +65,7 @@ export default function ShopPage() {
           </button>
           {/* View toggle */}
           <div className="hidden md:flex items-center border-2 border-gray-200 rounded-xl overflow-hidden">
-            {[['grid', <Grid3x3 size={16}/>], ['list', <List size={16}/>]].map(([v, icon]) => (
+            {[['grid', <Grid3x3 size={16} />], ['list', <List size={16} />]].map(([v, icon]) => (
               <button key={v} onClick={() => setView(v)}
                 className={`p-2 transition-colors ${view === v ? 'bg-pink-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}>
                 {icon}
@@ -141,5 +141,18 @@ export default function ShopPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={
+      <div className="pt-28 flex flex-col items-center justify-center min-vh-50">
+        <Loader2 className="animate-spin text-pink-500 mb-4" size={48} />
+        <p className="text-gray-500 font-medium font-playfair animate-pulse">Summoning the Glow... ✨</p>
+      </div>
+    }>
+      <ShopContent />
+    </Suspense>
   );
 }
