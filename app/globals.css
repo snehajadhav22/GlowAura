@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #FF4FA3;
+  --color-primary-dark: #FF1F84;
+  --color-secondary: #9b5de5;
+  --color-accent: #E7B5AC;
+  --color-blush: #FFF0F5;
+  --color-lavender: #F3E8FF;
+  --color-cream: #FFF9FB;
+  --font-playfair: "Playfair Display", serif;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2.5rem;
+}
+
+@layer base {
+  :root {
+    --background: #FFF9FB;
+    --foreground: #3D2B3D;
+    --card-bg: #ffffff;
+    --border-color: #FCE4EC;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.4);
+  }
+
+  .dark {
+    --background: #0A0A0A;
+    --foreground: #FFF9FB;
+    --card-bg: #141414;
+    --border-color: #1F1F1F;
+    --glass-bg: rgba(0, 0, 0, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Poppins', system-ui, sans-serif;
+    scroll-behavior: smooth;
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 active:scale-95 text-white font-bold px-6 py-3 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-pink-300/50 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2;
+  }
+
+  .btn-outline {
+    @apply border-2 border-pink-400 text-pink-500 hover:bg-pink-50 active:scale-95 font-bold px-6 py-3 rounded-2xl transition-all duration-300;
+  }
+
+  .glass-card {
+    @apply bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-xl rounded-3xl;
+  }
+
+  .product-card {
+    @apply bg-[var(--card-bg)] rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden cursor-pointer border border-[var(--border-color)];
+  }
+
+  .input-field {
+    @apply w-full px-5 py-3.5 border-2 border-[var(--border-color)] rounded-2xl focus:outline-none focus:border-pink-400 bg-[var(--card-bg)] focus:bg-white dark:focus:bg-black/20 transition-all text-sm;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-5 py-3.5 rounded-2xl text-gray-500 hover:bg-pink-50 hover:text-pink-600 transition-all duration-300 font-semibold;
+  }
+
+  .sidebar-link.active {
+    @apply bg-pink-100 text-pink-600 shadow-sm shadow-pink-100;
+  }
+
+  /* Micro-interactions */
+  .hover-sparkle:hover {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hover-sparkle:hover::after {
+    content: '✨';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    animation: sparkle-float 1.5s infinite;
+  }
+
+  @keyframes sparkle-float {
+
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+      opacity: 0;
+    }
+
+    50% {
+      transform: translate(-10px, -10px) scale(1.5);
+      opacity: 1;
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Custom swatches */
+  .swatch {
+    @apply w-4 h-4 rounded-full border border-white shadow-sm cursor-pointer hover:scale-125 transition-transform;
+  }
+}
+
+/* Hide scrollbar for brand bar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
