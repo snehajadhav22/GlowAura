@@ -44,6 +44,7 @@ export default function ARStudio({ product, shades, onClose }) {
   const [activeProducts, setActiveProds] = useState([]);
   const [errorMsg, setErrorMsg]         = useState('');
   const faceStableCount = useRef(0);
+  const lastTimestamp   = useRef(0);
 
   // ----- INITIALIZATION -----
   useEffect(() => {
