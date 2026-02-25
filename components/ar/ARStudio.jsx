@@ -49,46 +49,77 @@ export default function ARStudio({ product, shades, onClose }) {
   useEffect(() => {
     let cancelled = false;
 
-    const init = async () => {
+    const init = async (retryCount = 0) => {
       try {
+        setPhase('loading');
+        setErrorMsg('');
+
         // 1. Initialize face detector
-        setLoadMessage('Loading AI face detection model...');
-        detectorRef.current  = new FaceDetector();
-        rendererRef.current  = null; // set after canvas ready
-        skinRef.current      = new SkinToneAnalyzer();
-        lightRef.current     = new LightCorrector();
-        recommenderRef.current = new ShadeRecommender();
+        if (!detectorRef.current) {
+          setLoadMessage('Loading AI face detection... ✨');
+          detectorRef.current  = new FaceDetector();
+          skinRef.current      = new SkinToneAnalyzer();
+          lightRef.current     = new LightCorrector();
+          recommenderRef.current = new ShadeRecommender();
 
-        const success = await detectorRef.current.initialize(p => {
-          if (!cancelled) setLoadProgress(p);
-        });
+          const success = await detectorRef.current.initialize(p => {
+            if (!cancelled) setLoadProgress(p);
+          });
+          if (!success) throw new Error('AI Engine failed to load. Check your internet.');
+        }
 
-        if (!success) throw new Error('Failed to initialize face detection');
+        // 2. Request camera with a tiny delay to ensure OS stabilizes
+        setLoadMessage('Summoning camera... 📷');
+        await new Promise(r => setTimeout(r, 200)); 
 
-        // 2. Request camera
-        setLoadMessage('Accessing camera...');
+        if (cancelled) return;
+
+        // Cleanup any existing stream just in case
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach(t => t.stop());
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
+          video: { 
+            facingMode: { ideal: facingMode }, 
+            width: { ideal: 1280 }, 
+            height: { ideal: 720 } 
+          },
           audio: false,
         });
 
-        if (cancelled) { stream.getTracks().forEach(t => t.stop()); return; }
+        if (cancelled) { 
+          stream.getTracks().forEach(t => t.stop()); 
+          return; 
+        }
 
         streamRef.current = stream;
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+          // Wait for metadata to ensure video is ready
+          await new Promise((resolve) => {
+            videoRef.current.onloadedmetadata = resolve;
+          });
           await videoRef.current.play();
         }
 
         setPhase('guide');
       } catch (err) {
-        console.error(err);
-        if (err.name === 'NotAllowedError') {
-          setErrorMsg('Camera access denied. Please allow camera access in your browser settings.');
-        } else if (err.name === 'NotFoundError') {
-          setErrorMsg('No camera found on this device.');
+        console.error('AR Init Error:', err);
+        if (cancelled) return;
+
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          setErrorMsg('Camera access denied! Please unlock the camera in your browser settings.');
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          setErrorMsg('No camera found. AR Studio requires a camera to work.');
+        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError' || err.message?.includes('use')) {
+          setErrorMsg('Camera is busy! Close other apps (like Zoom or other tabs) using your camera.');
+        } else if (err.name === 'OverconstrainedError') {
+          // If 720p is too much, try default
+          if (retryCount === 0) return init(1);
+          setErrorMsg('Your camera settings are not supported. Try a different device.');
         } else {
-          setErrorMsg(err.message || 'Failed to initialize AR Studio. Try a different browser.');
+          setErrorMsg(err.message || 'Something went wrong while starting AR Studio.');
         }
         setPhase('error');
       }
@@ -102,7 +133,8 @@ export default function ARStudio({ product, shades, onClose }) {
       detectorRef.current?.destroy();
       streamRef.current?.getTracks().forEach(t => t.stop());
     };
-  }, []);
+  }, [facingMode]); // Re-init if facingMode changes manually via state if needed, 
+                    // though we handle flip separately, it's safer to have it here too.
 
   // ----- Setup renderer when canvas is ready -----
   useEffect(() => {
@@ -297,7 +329,19 @@ export default function ARStudio({ product, shades, onClose }) {
             <AlertTriangle size={48} className="text-red-400 mx-auto mb-4" />
             <h3 className="text-white text-xl font-bold mb-3">AR Studio Unavailable</h3>
             <p className="text-gray-400 text-sm mb-6">{errorMsg}</p>
-            <button onClick={onClose} className="btn-primary">Go Back</button>
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={() => {
+                  setPhase('loading');
+                  // This will trigger the useEffect because state changes
+                  window.location.reload(); 
+                }} 
+                className="btn-primary w-full"
+              >
+                Try Again ✨
+              </button>
+              <button onClick={onClose} className="text-gray-500 hover:text-white text-sm font-bold transition-colors">Go Back</button>
+            </div>
           </div>
         </div>
       )}
