@@ -6,6 +6,11 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'via.placeholder.com' },
       { protocol: 'https', hostname: 'storage.googleapis.com' },
+      { protocol: 'https', hostname: 'images.pexels.com' },
+      { protocol: 'https', hostname: 'i.pravatar.cc' },
+      { protocol: 'https', hostname: 'cdn.britannica.com' },
+      { protocol: 'https', hostname: 'images-static.nykaa.com' },
+      { protocol: 'http', hostname: 'images-static.nykaa.com' },
     ],
   },
   webpack: (config) => {
