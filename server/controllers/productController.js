@@ -1,23 +1,24 @@
-const Product              = require('../models/Product');
-const { cloudinary }       = require('../middleware/upload');
+const Product = require('../models/Product');
+const { cloudinary } = require('../middleware/upload');
 
 exports.getProducts = async (req, res) => {
   try {
     const {
       page = 1, limit = 12, sort = 'newest',
       brand, category, minPrice, maxPrice, discount,
-      rating, size, gender, search, bestseller, color,
+      rating, size, gender, search, bestseller, color, featured,
     } = req.query;
 
     const q = {};
-    if (brand)      q.brand    = { $in: brand.split(',') };
-    if (category)   q.category = { $in: category.split(',') };
-    if (size)       q.sizes    = { $in: size.split(',') };
-    if (gender)     q.gender   = gender;
-    if (color)      q.colors   = { $in: color.split(',') };
+    if (brand) q.brand = { $in: brand.split(',') };
+    if (category) q.category = { $in: category.split(',') };
+    if (size) q.sizes = { $in: size.split(',') };
+    if (gender) q.gender = gender;
+    if (color) q.colors = { $in: color.split(',') };
     if (bestseller) q.bestseller = true;
-    if (discount)   q.discount = { $gte: Number(discount) };
-    if (rating)     q.ratings  = { $gte: Number(rating) };
+    if (featured) q.featured = true;
+    if (discount) q.discount = { $gte: Number(discount) };
+    if (rating) q.ratings = { $gte: Number(rating) };
     if (minPrice || maxPrice) {
       q.price = {};
       if (minPrice) q.price.$gte = +minPrice;
@@ -26,16 +27,16 @@ exports.getProducts = async (req, res) => {
     if (search) q.$text = { $search: search };
 
     const sortMap = {
-      newest:     { createdAt: -1 },
-      oldest:     { createdAt: 1 },
-      'price-asc':  { price: 1 },
+      newest: { createdAt: -1 },
+      oldest: { createdAt: 1 },
+      'price-asc': { price: 1 },
       'price-desc': { price: -1 },
-      rating:     { ratings: -1 },
-      discount:   { discount: -1 },
+      rating: { ratings: -1 },
+      discount: { discount: -1 },
       popularity: { numReviews: -1 },
     };
 
-    const skip     = (Number(page) - 1) * Number(limit);
+    const skip = (Number(page) - 1) * Number(limit);
     const products = await Product.find(q)
       .sort(sortMap[sort] || sortMap.newest)
       .skip(skip)
@@ -63,16 +64,16 @@ const parseField = (val) => {
 exports.createProduct = async (req, res) => {
   try {
     const { title, description, price, discount, brand, category,
-            stock, bestseller, gender, fabric, countryOfOrigin } = req.body;
+      stock, bestseller, gender, fabric, countryOfOrigin } = req.body;
 
     const images = (req.files || []).map(f => ({ url: f.path, publicId: f.filename }));
 
     const product = await Product.create({
-      title, description, price: +price, discount: +(discount||0),
-      brand, category, stock: +(stock||0),
-      sizes:    parseField(req.body.sizes),
-      colors:   parseField(req.body.colors),
-      tags:     parseField(req.body.tags),
+      title, description, price: +price, discount: +(discount || 0),
+      brand, category, stock: +(stock || 0),
+      sizes: parseField(req.body.sizes),
+      colors: parseField(req.body.colors),
+      tags: parseField(req.body.tags),
       images, bestseller: bestseller === 'true',
       gender, fabric, countryOfOrigin,
     });
@@ -83,8 +84,8 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   try {
     const updates = { ...req.body };
-    ['price','discount','stock'].forEach(k => { if (updates[k]) updates[k] = +updates[k]; });
-    ['sizes','colors','tags'].forEach(k => {
+    ['price', 'discount', 'stock'].forEach(k => { if (updates[k]) updates[k] = +updates[k]; });
+    ['sizes', 'colors', 'tags'].forEach(k => {
       if (updates[k] && typeof updates[k] === 'string') updates[k] = parseField(updates[k]);
     });
     if (updates.bestseller) updates.bestseller = updates.bestseller === 'true';

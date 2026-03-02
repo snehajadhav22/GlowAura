@@ -12,7 +12,7 @@ const products = [
     title: 'Maybelline New York Fit Me Matte + Poreless 16H Oil Control Foundation With SPF 22 PA ++ 128 Warm Nude',
     description: 'Long-lasting matte finish with intense pigmentation. Glides on smoothly and stays put for up to 16 hours without drying out.',
     price: 599, discount: 20, brand: 'Maybelline', category: 'Lipstick',
-    stock: 50, bestseller: true, ratings: 4.5, numReviews: 128,
+    stock: 50, bestseller: true, featured: true, ratings: 4.5, numReviews: 128,
     colors: ['Red', 'Pink', 'Nude', 'Berry'],
     images: [{ url: 'https://images-static.nykaa.com/media/catalog/product/8/e/8eb092f6902395722434_1.jpg', publicId: 'seed_lip_1' }],
     arConfig: {
@@ -29,7 +29,7 @@ const products = [
     title: "M.A.C Powder Kiss Hazy Matte Lipstick - Marrakesh Mere(3.5g)",
     description: 'A weightless matte lipstick infused with powder for a soft, hazy finish. Comfortable 8-hour wear with rich pigmentation.',
     price: 1900, discount: 10, brand: 'MAC', category: 'Lipstick',
-    stock: 40, bestseller: true, ratings: 4.6, numReviews: 210,
+    stock: 40, bestseller: true, featured: true, ratings: 4.6, numReviews: 210,
     colors: ['Marrakesh Mere'],
     images: [{ url: 'https://images-static.nykaa.com/media/catalog/product/f/6/f6ea91fMACXX00002867_1.jpg', publicId: 'seed_lip_2' }],
     arConfig: {
@@ -195,7 +195,7 @@ const products = [
     title: 'Lakme Forever Matte Foundation For Superior Coverage, Vitamin E, Lightweight & Water-Resist , Marble(27ml)',
     description: 'Superior coverage matte foundation with Vitamin E. Water-resistant formula delivers a flawless marble-smooth finish.',
     price: 699, discount: 18, brand: 'Lakme', category: 'Foundation',
-    stock: 60, bestseller: true, ratings: 4.5, numReviews: 195,
+    stock: 60, bestseller: true, featured: true, ratings: 4.5, numReviews: 195,
     images: [{ url: 'https://images-static.nykaa.com/media/catalog/product/6/9/6920fedLAK_8901030175671_1.jpg', publicId: 'seed_fnd_3' }],
     arConfig: {
       region: 'face', intensityDefault: 0.5, blendMode: 'multiply', arEnabled: true,
@@ -251,7 +251,7 @@ const products = [
     title: 'Lakme 9 To 5 Hya Matte Foundation + Hyaluronic Acid, Hydrated Matte Finish Upto 12Hr Warm Creme(25ml)',
     description: 'First-of-its-kind Hyaluronic Acid-infused matte foundation. Hydrated matte finish that stays for up to 12 hours.',
     price: 799, discount: 15, brand: 'Lakme', category: 'Foundation',
-    stock: 50, bestseller: true, ratings: 4.6, numReviews: 210,
+    stock: 50, bestseller: true, featured: true, ratings: 4.6, numReviews: 210,
     images: [{ url: 'https://images-static.nykaa.com/media/catalog/product/1/a/1a32f46LAKME00002115_1.jpg', publicId: 'seed_fnd_7' }],
     arConfig: {
       region: 'face', intensityDefault: 0.48, blendMode: 'multiply', arEnabled: true,

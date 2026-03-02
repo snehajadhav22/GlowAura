@@ -32,6 +32,7 @@ const productSchema = new mongoose.Schema({
   fabric: String,
   countryOfOrigin: { type: String, default: 'India' },
   tags: [String],
+  featured: { type: Boolean, default: false },
 
   arConfig: {
     region: {
