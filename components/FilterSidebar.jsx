@@ -1,14 +1,14 @@
 'use client';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useCallback }      from 'react';
-import { ChevronDown, ChevronUp, X }  from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
 
-const BRANDS     = ['Lakme', 'Maybelline', 'Huda', 'MAC', 'Nykaa', "L'Oreal", 'Sugar', 'Colorbar'];
-const CATEGORIES = ['Lipstick','Foundation','Eyeshadow','Skincare','Perfume','Haircare','Nailcare','Blush','Mascara'];
-const DISCOUNTS  = [{ label: '10% and above', val: 10 }, { label: '20% and above', val: 20 }, { label: '30% and above', val: 30 }, { label: '40% and above', val: 40 }];
-const RATINGS    = [4, 3, 2];
-const GENDERS    = ['Women', 'Men', 'Unisex'];
-const COLORS     = ['Red','Pink','Nude','Berry','Brown','Coral','Orange','Purple','Black','White','Beige'];
+const BRANDS = ['Lakme', 'Maybelline', 'Huda', 'MAC', 'Nykaa', "L'Oreal", 'Sugar', 'Colorbar'];
+const CATEGORIES = ['Lipstick', 'Foundation', 'Eyeshadow', 'Skincare', 'Perfume', 'Haircare', 'Nailcare', 'Blush', 'Mascara', 'Eyeliner', 'Highlighter', 'Contour', 'Accessories'];
+const DISCOUNTS = [{ label: '10% and above', val: 10 }, { label: '20% and above', val: 20 }, { label: '30% and above', val: 30 }, { label: '40% and above', val: 40 }];
+const RATINGS = [4, 3, 2];
+const GENDERS = ['Women', 'Men', 'Unisex'];
+const COLORS = ['Red', 'Pink', 'Nude', 'Berry', 'Brown', 'Coral', 'Orange', 'Purple', 'Black', 'White', 'Beige'];
 
 function Section({ title, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -25,11 +25,11 @@ function Section({ title, children, defaultOpen = false }) {
 }
 
 export default function FilterSidebar({ onClose }) {
-  const router       = useRouter();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
-  const get  = (k)    => searchParams.get(k) || '';
-  const getA = (k)    => get(k) ? get(k).split(',') : [];
+  const get = (k) => searchParams.get(k) || '';
+  const getA = (k) => get(k) ? get(k).split(',') : [];
 
   const push = useCallback((key, value) => {
     const p = new URLSearchParams(searchParams.toString());
@@ -47,7 +47,7 @@ export default function FilterSidebar({ onClose }) {
 
   const clearAll = () => router.push('/shop');
 
-  const hasFilters = searchParams.toString().replace(/page=\d*&?/,'') !== '';
+  const hasFilters = searchParams.toString().replace(/page=\d*&?/, '') !== '';
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
@@ -71,10 +71,10 @@ export default function FilterSidebar({ onClose }) {
         <select value={get('sort')} onChange={e => push('sort', e.target.value)}
           className="w-full input-field !py-2 text-sm">
           {[
-            ['newest','Newest First'],['price-asc','Price: Low → High'],
-            ['price-desc','Price: High → Low'],['rating','Top Rated'],
-            ['discount','Best Discount'],['popularity','Popularity'],
-          ].map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+            ['newest', 'Newest First'], ['price-asc', 'Price: Low → High'],
+            ['price-desc', 'Price: High → Low'], ['rating', 'Top Rated'],
+            ['discount', 'Best Discount'], ['popularity', 'Popularity'],
+          ].map(([v, l]) => <option key={v} value={v}>{l}</option>)}
         </select>
       </Section>
 
@@ -82,8 +82,8 @@ export default function FilterSidebar({ onClose }) {
       <Section title="Price Range" defaultOpen>
         <div className="space-y-2">
           {[
-            ['Under ₹500','','500'],['₹500 – ₹1000','500','1000'],
-            ['₹1000 – ₹2000','1000','2000'],['Above ₹2000','2000',''],
+            ['Under ₹500', '', '500'], ['₹500 – ₹1000', '500', '1000'],
+            ['₹1000 – ₹2000', '1000', '2000'], ['Above ₹2000', '2000', ''],
           ].map(([label, min, max]) => (
             <label key={label} className="flex items-center gap-2 cursor-pointer">
               <input type="radio" name="price"

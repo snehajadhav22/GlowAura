@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Search, ShoppingBag, User, Heart, Menu, X,
   Sparkles, Bell, Ghost, LogOut, Settings,
@@ -12,12 +13,26 @@ import { useCart } from '@/context/CartContext';
 const BRANDS = ['Lakme', 'Maybelline', 'Huda', 'MAC', 'Nykaa', 'L\'Oreal', 'Sugar', 'Colorbar'];
 
 export default function Navbar() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const { user, logout } = useAuth();
   const { items } = useCart();
+
+  const handleSearch = (e) => {
+    if (e.key === 'Enter') {
+      const params = new URLSearchParams(searchParams.toString());
+      if (searchTerm) params.set('search', searchTerm);
+      else params.delete('search');
+      params.set('page', '1');
+      router.push(`/shop?${params.toString()}`);
+      setIsMenuOpen(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -71,6 +86,9 @@ export default function Navbar() {
               <input
                 type="text"
                 placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleSearch}
                 className="w-full bg-transparent border-none outline-none px-3 py-2 text-sm font-medium placeholder:text-pink-200"
               />
             </div>
@@ -205,6 +223,9 @@ export default function Navbar() {
               <input
                 type="text"
                 placeholder="Find your vibe..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleSearch}
                 className="w-full bg-pink-50/50 dark:bg-white/5 rounded-2xl pl-12 pr-6 py-4 outline-none border border-pink-100 dark:border-white/10 font-medium"
               />
             </div>

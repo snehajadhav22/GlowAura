@@ -11,7 +11,7 @@ const products = [
   {
     title: 'Maybelline New York Fit Me Matte + Poreless 16H Oil Control Foundation With SPF 22 PA ++ 128 Warm Nude',
     description: 'Long-lasting matte finish with intense pigmentation. Glides on smoothly and stays put for up to 16 hours without drying out.',
-    price: 599, discount: 20, brand: 'Maybelline', category: 'Lipstick',
+    price: 599, discount: 20, brand: 'Maybelline', category: 'Foundation',
     stock: 50, bestseller: true, featured: true, ratings: 4.5, numReviews: 128,
     colors: ['Red', 'Pink', 'Nude', 'Berry'],
     images: [{ url: 'https://images-static.nykaa.com/media/catalog/product/8/e/8eb092f6902395722434_1.jpg', publicId: 'seed_lip_1' }],

@@ -1,4 +1,3 @@
-'use client';
 import { Sparkles, Heart, Camera, ArrowRight, Star, ShoppingBag, Gift, Zap } from 'lucide-react';
 import NextLink from 'next/link';
 import Image from 'next/image';
